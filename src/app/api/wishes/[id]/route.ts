@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
+import Wish from "../../../../../models/Wish";
 import { connectDB } from "../../../../../lib/mongodb";
-import { Wish } from "../../../../../models/Wish";
 
-// PATCH → like a wish
+
 export async function PATCH(
   req: Request,
   { params }: { params: { id: string } }

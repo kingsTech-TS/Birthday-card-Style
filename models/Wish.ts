@@ -1,14 +1,21 @@
+import mongoose, { Schema, Document } from "mongoose";
 
-import mongoose, { Schema, models } from "mongoose";
+export interface IWish extends Document {
+  name: string;
+  message: string;
+  color: string;
+  likes: number;
+  createdAt: Date;
+}
 
-const WishSchema = new Schema(
+const WishSchema = new Schema<IWish>(
   {
     name: { type: String, required: true },
     message: { type: String, required: true },
-    color: { type: String, required: true },
+    color: { type: String, default: "#f5f5f5" },
     likes: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
 
-export const Wish = models.Wish || mongoose.model("Wish", WishSchema);
+export default mongoose.models.Wish || mongoose.model<IWish>("Wish", WishSchema);
