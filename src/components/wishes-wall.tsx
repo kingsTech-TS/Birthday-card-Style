@@ -135,7 +135,7 @@ export function WishesWall() {
                 </span>
               </div>
               <p className="leading-relaxed">{wish.message}</p>
-              <div className="flex items-center justify-end gap-2">
+              {/* <div className="flex items-center justify-end gap-2">
                 <button
                   onClick={() => handleLike(wish._id)}
                   className="flex items-center gap-1 text-accent hover:scale-110 transition-transform"
@@ -146,7 +146,7 @@ export function WishesWall() {
                   />
                   <span className="text-sm">{wish.likes}</span>
                 </button>
-              </div>
+              </div> */}
             </div>
           </Card>
         ))}
