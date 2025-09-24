@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const MONGODB_URI = "mongodb+srv://kingTech_db_user:19724212@cluster0.2rwinup.mongodb.net/"
 
 if (!MONGODB_URI) {
-  throw new Error("❌ Please define MONGODB_URI in .env.local");
+  throw new Error("❌ Please check your api key");
 }
 
 let isConnected = false;
