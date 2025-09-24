@@ -56,15 +56,15 @@ export function WishesWall() {
     setIsSubmitting(false);
   };
 
-  const handleLike = async (id: string) => {
-    const res = await fetch(`/api/wishes/${id}`, { method: "PATCH" });
-    if (res.ok) {
-      const updated = await res.json();
-      setWishes((prev) =>
-        prev.map((wish) => (wish._id === id ? { ...wish, likes: updated.likes } : wish))
-      );
-    }
-  };
+  // const handleLike = async (id: string) => {
+  //   const res = await fetch(`/api/wishes/${id}`, { method: "PATCH" });
+  //   if (res.ok) {
+  //     const updated = await res.json();
+  //     setWishes((prev) =>
+  //       prev.map((wish) => (wish._id === id ? { ...wish, likes: updated.likes } : wish))
+  //     );
+  //   }
+  // };
 
   const formatTimeAgo = (dateString: string) => {
     const timestamp = new Date(dateString);
