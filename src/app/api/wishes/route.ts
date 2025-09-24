@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "../../../../lib/mongodb";
 import { Wish } from "../../../../models/Wish";
-;
+
 
 // GET all wishes
 export async function GET() {
