@@ -190,44 +190,47 @@ export function BirthdayCarousel({ autoSlideInterval = 4000 }: BirthdayCarouselP
         </div>
 
         {/* Controls */}
-        <div className="p-4 bg-card/50 backdrop-blur-sm">
-          <div className="flex items-center justify-between">
-            {/* Indicators */}
-            <div className="flex space-x-2">
-              {userSlides.map((_, index) => (
-                <button
-                  key={index}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    index === currentSlide
-                      ? "bg-primary scale-125"
-                      : "bg-muted hover:bg-primary/50"
-                  }`}
-                  onClick={() => goToSlide(index)}
-                />
-              ))}
-            </div>
+<div className="p-4 bg-card/50 backdrop-blur-sm">
+  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    
+    {/* Indicators (scrollable + responsive) */}
+    <div className="flex overflow-x-auto sm:max-w-[250px] md:max-w-[400px] space-x-2 scrollbar-hide mx-auto sm:mx-0">
+      {userSlides.map((_, index) => (
+        <button
+          key={index}
+          className={`w-3 h-3 rounded-full transition-all duration-300 flex-shrink-0 ${
+            index === currentSlide
+              ? "bg-primary scale-125"
+              : "bg-muted hover:bg-primary/50"
+          }`}
+          onClick={() => goToSlide(index)}
+        />
+      ))}
+    </div>
 
-            <div className="flex items-center space-x-2">
-              {/* Upload Button */}
-              <label className="cursor-pointer flex items-center px-3 py-1 rounded-md bg-background/50 border hover:bg-background/70">
-                <Plus className="h-4 w-4 mr-1" />
-                Add Image
-                <input type="file" accept="image/*" className="hidden" onChange={handleAddImage} />
-              </label>
+    {/* Buttons */}
+    <div className="flex items-center justify-center sm:justify-end space-x-2">
+      {/* Upload Button */}
+      <label className="cursor-pointer flex items-center px-3 py-1 rounded-md bg-background/50 border hover:bg-background/70">
+        <Plus className="h-4 w-4 mr-1" />
+        Add Image
+        <input type="file" accept="image/*" className="hidden" onChange={handleAddImage} />
+      </label>
 
-              {/* Play/Pause */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={togglePlayPause}
-                className="bg-background/50 backdrop-blur-sm"
-              >
-                {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                <span className="ml-2">{isPlaying ? "Pause" : "Play"}</span>
-              </Button>
-            </div>
-          </div>
-        </div>
+      {/* Play/Pause */}
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={togglePlayPause}
+        className="bg-background/50 backdrop-blur-sm"
+      >
+        {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+        <span className="ml-2">{isPlaying ? "Pause" : "Play"}</span>
+      </Button>
+    </div>
+  </div>
+</div>
+
       </Card>
 
       {/* Add Slide Modal */}
