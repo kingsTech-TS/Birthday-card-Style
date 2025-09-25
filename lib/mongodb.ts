@@ -1,21 +1,36 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
-const MONGODB_URI = process.env.MONGODB_URI as string;
+const MONGODB_URI = process.env.MONGODB_URI as string
 
 if (!MONGODB_URI) {
-  throw new Error("❌ Please check your api key");
+  throw new Error("❌ Please add your MongoDB URI to .env.local")
 }
 
-let isConnected = false;
+// Global cache across hot reloads
+let cached = (global as any).mongoose || { conn: null, promise: null }
 
 export async function connectDB() {
-  if (isConnected) return;
+  if (cached.conn) return cached.conn
+
+  if (!cached.promise) {
+    cached.promise = mongoose
+      .connect(MONGODB_URI, {
+        dbName: "birthday_app", // optional: set your db name
+      })
+      .then((mongoose) => mongoose)
+  }
 
   try {
-    const db = await mongoose.connect(MONGODB_URI);
-    isConnected = !!db.connections[0].readyState;
-    console.log("✅ MongoDB connected");
+    cached.conn = await cached.promise
+    console.log("✅ MongoDB connected")
+    return cached.conn
   } catch (err) {
-    console.error("❌ MongoDB connection error:", err);
+    cached.promise = null
+    console.error("❌ MongoDB connection error:", err)
+    throw err
   }
+}
+
+if (process.env.NODE_ENV !== "production") {
+  (global as any).mongoose = cached
 }
