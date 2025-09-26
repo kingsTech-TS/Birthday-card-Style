@@ -18,7 +18,7 @@ export function BirthdayMessage({ name = "Birthday Star", age, customMessage }: 
       `Happy Birthday, ${name}! Today is all about celebrating the amazing person you are and all the joy you bring to everyone around you.`,
     `${age ? `${age} years of awesome!` : "Another year of incredible memories!"} Here's to making this birthday the most magical one yet.`,
     "May your special day be filled with laughter, love, and all your favorite things. You deserve nothing but the best!",
-    "Wishing you a birthday that's as wonderful and unique as you are. Let's make some unforgettable memories today!",
+    "Wishing you a Birthday that's as wonderful and unique as you are. Let's make some unforgettable memories today!",
   ]
 
   useEffect(() => {
@@ -93,7 +93,7 @@ export function BirthdayMessage({ name = "Birthday Star", age, customMessage }: 
             }`}
           >
             <blockquote className="text-xl md:text-2xl font-medium text-accent italic border-l-4 border-secondary pl-6 max-w-2xl mx-auto">
-              "Birthdays are nature's way of telling us to eat more cake and celebrate life!"
+              "Thank you for being the amazing Dad that you are. I love you so much."
             </blockquote>
           </div>
 

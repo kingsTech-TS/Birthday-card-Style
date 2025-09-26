@@ -8,7 +8,7 @@ import { WishesWall } from "@/components/wishes-wall"
 export default function HomePage() {
   return (
     <main className="relative min-h-screen">
-      <AnimatedBackground />
+      {/* <AnimatedBackground /> */}
       <AutoConfetti />
 
       <div className="relative z-10 container mx-auto px-4 py-8 space-y-16">
@@ -23,7 +23,7 @@ export default function HomePage() {
         </div>
 
         {/* Birthday Message Section */}
-        <BirthdayMessage name="Amazing Person" age={25} />
+        <BirthdayMessage name="Ndunewe David Onyekachi" age={56} />
 
         {/* Carousel Section */}
         <section className="space-y-8">
