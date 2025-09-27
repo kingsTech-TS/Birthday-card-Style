@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { ChevronLeft, ChevronRight, Pause, Play, Plus } from "lucide-react"
+import { ChevronLeft, ChevronRight, Pause, Play, Plus, Loader2 } from "lucide-react"
+import toast, { Toaster } from "react-hot-toast"
 
 interface CarouselSlide {
   _id?: string
@@ -39,6 +40,7 @@ export function BirthdayCarousel({ autoSlideInterval = 4000 }: BirthdayCarouselP
   const [tempPreview, setTempPreview] = useState<string | null>(null)
   const [newTitle, setNewTitle] = useState("")
   const [newDescription, setNewDescription] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   // ✅ Fetch slides from MongoDB
   useEffect(() => {
@@ -49,6 +51,7 @@ export function BirthdayCarousel({ autoSlideInterval = 4000 }: BirthdayCarouselP
         if (Array.isArray(data)) setUserSlides(data)
       } catch (err) {
         console.error("Failed to fetch slides:", err)
+        toast.error("Failed to fetch slides.")
       }
     }
     fetchSlides()
@@ -98,6 +101,7 @@ export function BirthdayCarousel({ autoSlideInterval = 4000 }: BirthdayCarouselP
   const handleConfirmAdd = async () => {
     if (!tempFile) return
 
+    setIsLoading(true)
     try {
       // Upload to Cloudinary
       const formData = new FormData()
@@ -113,6 +117,8 @@ export function BirthdayCarousel({ autoSlideInterval = 4000 }: BirthdayCarouselP
       )
       const cloudData = await cloudRes.json()
 
+      if (!cloudData.secure_url) throw new Error("Cloudinary upload failed")
+
       // Save in MongoDB
       const saveRes = await fetch("/api/slides", {
         method: "POST",
@@ -124,12 +130,18 @@ export function BirthdayCarousel({ autoSlideInterval = 4000 }: BirthdayCarouselP
         }),
       })
 
+      if (!saveRes.ok) throw new Error("Failed to save slide in DB")
+
       const savedSlide = await saveRes.json()
       setUserSlides((prev) => [...prev, savedSlide])
       setCurrentSlide(userSlides.length) // jump to new slide
+
+      toast.success("🎉 Slide added successfully!")
     } catch (err) {
       console.error("❌ Failed to upload slide:", err)
+      toast.error("Failed to add slide. Try again.")
     } finally {
+      setIsLoading(false)
       setTempFile(null)
       setTempPreview(null)
       setNewTitle("")
@@ -140,6 +152,9 @@ export function BirthdayCarousel({ autoSlideInterval = 4000 }: BirthdayCarouselP
 
   return (
     <div className="w-full max-w-4xl mx-auto">
+      {/* ✅ Toast provider */}
+      <Toaster position="top-right" />
+
       <Card className="overflow-hidden bg-card/80 backdrop-blur-sm border-2 border-primary/20">
         {/* Carousel */}
         <div
@@ -190,47 +205,50 @@ export function BirthdayCarousel({ autoSlideInterval = 4000 }: BirthdayCarouselP
         </div>
 
         {/* Controls */}
-<div className="p-4 bg-card/50 backdrop-blur-sm">
-  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-    
-    {/* Indicators (scrollable + responsive) */}
-    <div className="flex overflow-x-auto sm:max-w-[250px] md:max-w-[400px] space-x-2 scrollbar-hide mx-auto sm:mx-0">
-      {userSlides.map((_, index) => (
-        <button
-          key={index}
-          className={`w-3 h-3 rounded-full transition-all duration-300 flex-shrink-0 ${
-            index === currentSlide
-              ? "bg-primary scale-125"
-              : "bg-muted hover:bg-primary/50"
-          }`}
-          onClick={() => goToSlide(index)}
-        />
-      ))}
-    </div>
+        <div className="p-4 bg-card/50 backdrop-blur-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            {/* Indicators */}
+            <div className="flex overflow-x-auto sm:max-w-[250px] md:max-w-[400px] space-x-2 scrollbar-hide mx-auto sm:mx-0">
+              {userSlides.map((_, index) => (
+                <button
+                  key={index}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 flex-shrink-0 ${
+                    index === currentSlide
+                      ? "bg-primary scale-125"
+                      : "bg-muted hover:bg-primary/50"
+                  }`}
+                  onClick={() => goToSlide(index)}
+                />
+              ))}
+            </div>
 
-    {/* Buttons */}
-    <div className="flex items-center justify-center sm:justify-end space-x-2">
-      {/* Upload Button */}
-      <label className="cursor-pointer flex items-center px-3 py-1 rounded-md bg-background/50 border hover:bg-background/70">
-        <Plus className="h-4 w-4 mr-1" />
-        Add Image
-        <input type="file" accept="image/*" className="hidden" onChange={handleAddImage} />
-      </label>
+            {/* Buttons */}
+            <div className="flex items-center justify-center sm:justify-end space-x-2">
+              {/* Upload Button */}
+              <label className="cursor-pointer flex items-center px-3 py-1 rounded-md bg-background/50 border  hover:bg-[#f79a9a] hover:text-white">
+                <Plus className="h-4 w-4 mr-1" />
+                Add Image
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAddImage}
+                />
+              </label>
 
-      {/* Play/Pause */}
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={togglePlayPause}
-        className="bg-background/50 backdrop-blur-sm"
-      >
-        {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-        <span className="ml-2">{isPlaying ? "Pause" : "Play"}</span>
-      </Button>
-    </div>
-  </div>
-</div>
-
+              {/* Play/Pause */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={togglePlayPause}
+                className="bg-background/50 backdrop-blur-sm"
+              >
+                {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                <span className="ml-2">{isPlaying ? "Pause" : "Play"}</span>
+              </Button>
+            </div>
+          </div>
+        </div>
       </Card>
 
       {/* Add Slide Modal */}
@@ -241,7 +259,11 @@ export function BirthdayCarousel({ autoSlideInterval = 4000 }: BirthdayCarouselP
           </DialogHeader>
           {tempPreview && (
             <div className="mb-4">
-              <img src={tempPreview} alt="Preview" className="w-full h-40 object-cover rounded-md" />
+              <img
+                src={tempPreview}
+                alt="Preview"
+                className="w-full h-40 object-cover rounded-md"
+              />
             </div>
           )}
           <Input
@@ -257,10 +279,18 @@ export function BirthdayCarousel({ autoSlideInterval = 4000 }: BirthdayCarouselP
             className="mb-2"
           />
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isLoading}>
               Cancel
             </Button>
-            <Button onClick={handleConfirmAdd}>Add Slide</Button>
+            <Button className="bg-[#f79a9a]" onClick={handleConfirmAdd} disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Adding...
+                </>
+              ) : (
+                "Add Slide"
+              )}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

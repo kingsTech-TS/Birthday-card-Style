@@ -112,7 +112,7 @@ export function WishesWall() {
             </div>
           </div>
           <div className="flex justify-end">
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" className="bg-[#f79a9a]" disabled={isSubmitting}>
               {isSubmitting ? "Sending..." : "Send Wish"}
             </Button>
           </div>
