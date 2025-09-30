@@ -23,7 +23,7 @@ export default function HomePage() {
         </div>
 
         {/* Birthday Message Section */}
-        <BirthdayMessage name="Ndunewe David Onyekachi" age={56} />
+        <BirthdayMessage name="Ndunewe David Onyekachi" age={57} />
 
         {/* Carousel Section */}
         <section className="space-y-8">
